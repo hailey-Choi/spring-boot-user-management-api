@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +20,7 @@ public class UserServiceImpl implements UserService {
     // can omit adding @Autowired annotation
     private UserRepository userRepository;
 
+    // Refactor create user API to transfer DTO instead of JPA entity
     @Override
     public UserDto createUser(UserDto userDto) {
 
@@ -39,9 +41,12 @@ public class UserServiceImpl implements UserService {
         return optionalUser.get();
     }
 
+    // Refactor get all users API to transfer DTO instead of JPA entity
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream().map(UserMapper::mapToUserDto).collect(Collectors.toList());
     }
 
     @Override
